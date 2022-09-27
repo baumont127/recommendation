@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+    var moins_que_trente = "{{ moins_que_trente|safe }}";
+    var plus_que_soixante = "{{ plus_que_soixante|safe }}";
+    var plus_que_trente = "{{ plus_que_trente|safe }}";
+</script>
+<script type="text/javascript">
+  google.charts.load("current", {packages:["corechart"]});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+    var data = google.visualization.arrayToDataTable([
+      ['Compétences', 'Nb compétences utilisateurs'],
+      ['< 30%', (moins_que_trente*100)],
+      ['>= 30% et < 60%', (plus_que_trente*100)],
+      ['> 60%', (plus_que_soixante*100)]
+    ]);
+    var options = {
+      title: "Pourcentage d'offres par nombre de compétences dans les offres d'emploi",
+      is3D: true,
+      slices: {
+            0: { color: 'red' },
+            1: { color: 'orange' },
+            2: { color: 'darkgreen' }
+          },
+    };
+
+    var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+    chart.draw(data, options);
+  }
+</script>
+
+
+<div class="m-4">
+    <div id="piechart_3d" class="text-center"></div>
+    {% for offres in list_offres %}
+    {{offres.1}}% des compétences
+    <div class="accordion" id="myAccordion{{offres.0.0}}">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                {% if offres.1 < 30 %}
+                    <div class="progress">
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: {{offres.1}}%" aria-valuenow="{{offres.1}}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                {% endif %}
+                {% if offres.1 < 60 and offres.1 >= 30%}
+                    <div class="progress">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: {{offres.1}}%" aria-valuenow="{{offres.1}}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                {% endif %}
+                {% if offres.1 > 60%}
+                    <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{offres.1}}%" aria-valuenow="{{offres.1}}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                {% endif %}
+                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapseOne{{offres.0.0}}">{{offres.0.1}}</button>									
+            </h2>
+            <div id="collapseOne{{offres.0.0}}" class="accordion-collapse collapse" data-bs-parent="#myAccordion{{offres.0.0}}">
+                <div class="card-body">
+                    <p> {{offres.0.5}} <a href={{offres.0.6}} target="_blank">{{offres.0.6}} </a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+jupyter = "*"
+notebook = "*"
+pandas = "*"
+api-offres-emploi = "*"
+requests = "*"
+python-dotenv = "*"
+azure-ai-textanalytics = "*"
+django = "*"
+django-bootstrap-v5 = "*"
+django-crispy-forms = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
